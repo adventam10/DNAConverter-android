@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="16dp"
+        android:orientation="vertical">
+        <RadioGroup
+            android:id="@+id/radio_group_mode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checkedButton="@id/radio_button_language"
+            android:orientation="horizontal">
+            <RadioButton
+                android:id="@+id/radio_button_language"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="ことば" />
+            <RadioButton
+                android:id="@+id/radio_button_nucleotide"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="ぬくれおちど" />
+        </RadioGroup>
+
+        <EditText
+            android:id="@+id/edit_text_original"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:hint="テキストを入力してください" />
+
+        <TextView
+            android:id="@+id/text_view_converted"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            tools:layout_editor_absoluteX="140dp"
+            tools:layout_editor_absoluteY="284dp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <Button
+                android:id="@+id/button_convert"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="変換する" />
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1"
+                />
+            <ImageButton
+                android:id="@+id/image_button_twitter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_twitter"
+                android:background="@null"/>
+        </LinearLayout>
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
