@@ -21,12 +21,12 @@
                 android:id="@+id/radio_button_language"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="ことば" />
+                android:text="@string/mode_language" />
             <RadioButton
                 android:id="@+id/radio_button_nucleotide"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="ぬくれおちど" />
+                android:text="@string/mode_dna" />
         </RadioGroup>
 
         <EditText
@@ -36,7 +36,7 @@
             android:layout_weight="1"
             android:ems="10"
             android:inputType="textPersonName"
-            android:hint="テキストを入力してください" />
+            android:hint="@string/original_place_holder" />
 
         <TextView
             android:id="@+id/text_view_converted"
@@ -53,7 +53,7 @@
                 android:id="@+id/button_convert"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="変換する" />
+                android:text="@string/convert" />
             <View
                 android:layout_width="0dp"
                 android:layout_height="1dp"

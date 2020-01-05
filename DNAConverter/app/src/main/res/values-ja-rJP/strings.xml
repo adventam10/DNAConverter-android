@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">DNA変換</string>
+    <string name="mode_language">ことば</string>
+    <string name="mode_dna">ぬくれおちど</string>
+    <string name="convert">変換する</string>
+    <string name="alert_message">むり...</string>
+    <string name="error_message">むり...</string>
+    <string name="original_place_holder">テキストを入力してください</string>
+    <string name="hash_tag">DNA変換</string>
+</resources>

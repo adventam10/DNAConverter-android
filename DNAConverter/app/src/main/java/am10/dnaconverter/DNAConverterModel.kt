@@ -12,24 +12,19 @@ class DNAConverterModel {
         "CA" to "8", "CT" to "9", "CC" to "a", "CG" to "b",
         "GA" to "c", "GT" to "d", "GC" to "e", "GG" to "f"
     )
-    val twitterURL: Uri?
-    get() {
+    fun getTwitterURL(hashTag: String): Uri? {
         if (convertedText.isNullOrEmpty()) {
             return null
         }
         val url = "https://twitter.com/intent/tweet?text=" + urlEncode(convertedText!!) + hashTag
         return Uri.parse(url)
     }
-    val hashTag: String
-    get() {
-        return "&hashtags=" + urlEncode("DNA変換")
-    }
     fun urlEncode(text: String): String {
         return URLEncoder.encode(text, "UTF-8")
     }
-    fun convertToDNA(text: String?): String {
+    fun convertToDNA(text: String?): String? {
         if (text.isNullOrEmpty()) {
-            return "...むり"
+            return null
         }
         val hex = text.toByteArray().map { b -> String.format("%02X", b) }.joinToString("")
         var result = hex.toLowerCase()
@@ -37,12 +32,12 @@ class DNAConverterModel {
         return result
     }
 
-    fun convertToLanguage(text: String?): String {
+    fun convertToLanguage(text: String?): String? {
         if (text.isNullOrEmpty()) {
-            return "...むり"
+            return null
         }
         if (isInvalidDNA(text)) {
-            return "...むり"
+            return null
         }
         var index = 0
         val strings: MutableList<String> = mutableListOf()

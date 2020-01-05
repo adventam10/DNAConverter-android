@@ -12,6 +12,10 @@ class MainActivity : AppCompatActivity() {
     enum class Mode {
         LANGUAGE, DNA
     }
+    val hashTag: String
+        get() {
+            return "&hashtags=" + model.urlEncode(getString(R.string.hash_tag))
+        }
 
     val convertedTextView: TextView
     get() {
@@ -39,16 +43,16 @@ class MainActivity : AppCompatActivity() {
             hideKeyboard()
             setTexts()
             if (mode == Mode.LANGUAGE) {
-                convertedTextView.text = model.convertToDNA(model.originalText)
+                convertedTextView.text = model.convertToDNA(model.originalText)?: getString(R.string.error_message)
             } else {
-                convertedTextView.text = model.convertToLanguage(model.originalText)
+                convertedTextView.text = model.convertToLanguage(model.originalText)?: getString(R.string.error_message)
             }
         }
         val twitterButton: ImageButton = findViewById(R.id.image_button_twitter)
         twitterButton.setOnClickListener {
             hideKeyboard()
             setTexts()
-            val intent = Intent(Intent.ACTION_VIEW, model.twitterURL)
+            val intent = Intent(Intent.ACTION_VIEW, model.getTwitterURL(hashTag))
             startActivity(intent)
         }
     }
