@@ -65,7 +65,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/convert"
                         android:minWidth="0dp"
-                        android:textColor="@color/colorAccent"
+                        android:textColor="@drawable/text_button_selector"
                         android:background="@null"/>
                 </LinearLayout>
             </LinearLayout>
@@ -104,24 +104,24 @@
                         android:id="@+id/image_button_download"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:srcCompat="@drawable/ic_file_download"
                         android:layout_marginRight="8dp"
-                        android:background="@null"
-                        android:layout_gravity="center_vertical"/>
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/button_selector"
+                        android:background="@drawable/ic_file_download"/>
                     <ImageButton
                         android:id="@+id/image_button_copy"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:srcCompat="@drawable/ic_content_copy"
                         android:layout_marginRight="8dp"
-                        android:background="@null"
-                        android:layout_gravity="center_vertical"/>
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/button_selector"
+                        android:background="@drawable/ic_content_copy"/>
                     <ImageButton
                         android:id="@+id/image_button_twitter"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:srcCompat="@drawable/ic_twitter"
-                        android:background="@null"/>
+                        android:src="@drawable/button_selector"
+                        android:background="@drawable/ic_twitter"/>
                 </LinearLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
