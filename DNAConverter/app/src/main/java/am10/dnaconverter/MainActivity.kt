@@ -8,6 +8,8 @@ import android.os.Bundle
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import android.content.Intent
+import android.view.Menu
+import android.view.MenuItem
 import androidx.appcompat.app.AlertDialog
 
 class MainActivity : AppCompatActivity() {
@@ -71,6 +73,8 @@ class MainActivity : AppCompatActivity() {
                 showConfirmationDialog(getString(R.string.alert_title), getString(R.string.alert_message))
                 return@setOnClickListener
             }
+            saveFile("test.txt", model.convertedText!!)
+            Toast.makeText(this , R.string.download_message, Toast.LENGTH_SHORT).show();
         }
         val copyButton: ImageButton = findViewById(R.id.image_button_copy)
         copyButton.setOnClickListener {
@@ -82,6 +86,38 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        super.onCreateOptionsMenu(menu)
+        val inflater = menuInflater
+        inflater.inflate(R.menu.main_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.getItemId()) {
+            R.id.share -> {
+                shareConvertedText()
+                return true
+            }
+            else -> return super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun shareConvertedText() {
+        setTexts()
+        if (model.isInvalidDNA(model.convertedText)) {
+            showConfirmationDialog(getString(R.string.alert_title), getString(R.string.alert_message))
+            return
+        }
+        val sendIntent: Intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, model.convertedText)
+            type = "text/plain"
+        }
+
+        val shareIntent = Intent.createChooser(sendIntent, null)
+        startActivity(shareIntent)
+    }
     private fun hideKeyboard() {
         val view = currentFocus
         if (view != null) {
@@ -100,5 +136,11 @@ class MainActivity : AppCompatActivity() {
             .setTitle(title)
             .setMessage(message)
             .setPositiveButton(getString(R.string.alert_positive_button_title), null).show()
+    }
+
+    private fun saveFile(file: String, text: String) {
+        applicationContext.openFileOutput(file, Context.MODE_PRIVATE).use {
+            it.write(text.toByteArray())
+        }
     }
 }

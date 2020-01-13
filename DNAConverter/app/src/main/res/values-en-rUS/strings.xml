@@ -11,4 +11,6 @@
     <string name="copy_message">Result copied</string>
     <string name="alert_title">Confirmation</string>
     <string name="alert_positive_button_title">OK</string>
+    <string name="download_message">Result downloaded</string>
+    <string name="menu_share">Share</string>
 </resources>
