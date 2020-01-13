@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import android.content.Intent
+import androidx.appcompat.app.AlertDialog
 
 class MainActivity : AppCompatActivity() {
 
@@ -36,6 +37,7 @@ class MainActivity : AppCompatActivity() {
         return Mode.DNA
     }
     val model = DNAConverterModel()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -54,6 +56,10 @@ class MainActivity : AppCompatActivity() {
         twitterButton.setOnClickListener {
             hideKeyboard()
             setTexts()
+            if (model.isInvalidDNA(model.convertedText)) {
+                showConfirmationDialog(getString(R.string.alert_title), getString(R.string.alert_message))
+                return@setOnClickListener
+            }
             val intent = Intent(Intent.ACTION_VIEW, model.getTwitterURL(hashTag))
             startActivity(intent)
         }
@@ -61,13 +67,17 @@ class MainActivity : AppCompatActivity() {
         downloadButton.setOnClickListener {
             hideKeyboard()
             setTexts()
+            if (model.isInvalidDNA(model.convertedText)) {
+                showConfirmationDialog(getString(R.string.alert_title), getString(R.string.alert_message))
+                return@setOnClickListener
+            }
         }
         val copyButton: ImageButton = findViewById(R.id.image_button_copy)
         copyButton.setOnClickListener {
             hideKeyboard()
             setTexts()
             val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-            clipboard.setPrimaryClip(ClipData.newPlainText(R.string.mode_dna.toString(), model.convertedText))
+            clipboard.setPrimaryClip(ClipData.newPlainText(getString(R.string.mode_dna), model.convertedText))
             Toast.makeText(this , R.string.copy_message, Toast.LENGTH_SHORT).show();
         }
     }
@@ -79,9 +89,16 @@ class MainActivity : AppCompatActivity() {
             manager.hideSoftInputFromWindow(view.windowToken, 0)
         }
     }
+
     private fun setTexts() {
         model.originalText = originalEditText.text.toString()
         model.convertedText = convertedTextView.text.toString()
     }
 
+    private fun showConfirmationDialog(title: String, message: String) {
+        AlertDialog.Builder(this)
+            .setTitle(title)
+            .setMessage(message)
+            .setPositiveButton(getString(R.string.alert_positive_button_title), null).show()
+    }
 }

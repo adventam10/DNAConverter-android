@@ -9,4 +9,6 @@
     <string name="original_place_holder">テキストを入力してください</string>
     <string name="hash_tag">DNA変換</string>
     <string name="copy_message">結果をコピーしました</string>
+    <string name="alert_title">確認</string>
+    <string name="alert_positive_button_title">OK</string>
 </resources>
