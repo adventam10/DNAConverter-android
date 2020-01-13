@@ -10,6 +10,7 @@ import android.widget.*
 import android.content.Intent
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.AlertDialog
 
 class MainActivity : AppCompatActivity() {
@@ -66,6 +67,7 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
         val downloadButton: ImageButton = findViewById(R.id.image_button_download)
+        downloadButton.visibility = View.INVISIBLE
         downloadButton.setOnClickListener {
             hideKeyboard()
             setTexts()
