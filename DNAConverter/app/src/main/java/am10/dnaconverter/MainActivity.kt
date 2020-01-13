@@ -1,5 +1,7 @@
 package am10.dnaconverter
 
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -54,6 +56,19 @@ class MainActivity : AppCompatActivity() {
             setTexts()
             val intent = Intent(Intent.ACTION_VIEW, model.getTwitterURL(hashTag))
             startActivity(intent)
+        }
+        val downloadButton: ImageButton = findViewById(R.id.image_button_download)
+        downloadButton.setOnClickListener {
+            hideKeyboard()
+            setTexts()
+        }
+        val copyButton: ImageButton = findViewById(R.id.image_button_copy)
+        copyButton.setOnClickListener {
+            hideKeyboard()
+            setTexts()
+            val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            clipboard.setPrimaryClip(ClipData.newPlainText(R.string.mode_dna.toString(), model.convertedText))
+            Toast.makeText(this , R.string.copy_message, Toast.LENGTH_SHORT).show();
         }
     }
 

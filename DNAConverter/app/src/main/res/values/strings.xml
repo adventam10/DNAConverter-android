@@ -7,4 +7,5 @@
     <string name="error_message">impossible😕</string>
     <string name="original_place_holder">Enter text</string>
     <string name="hash_tag">DNAConverter</string>
+    <string name="copy_message">Result copied</string>
 </resources>

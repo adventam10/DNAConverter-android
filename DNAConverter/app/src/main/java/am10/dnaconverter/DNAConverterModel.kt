@@ -52,7 +52,6 @@ class DNAConverterModel {
 
     fun isInvalidDNA(text: String?): Boolean {
         if (text.isNullOrEmpty() || text.length%2!=0) {
-            println("a: $text")
             return true
         }
         if (Regex("""[ATCG]+""").matchEntire(text)?.value == null) {
