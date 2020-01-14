@@ -169,14 +169,14 @@ class MainActivity : AppCompatActivity() {
         val path = getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)
         val file = File(path, fileName)
         try {
-            FileOutputStream(file, true).use({ fileOutputStream ->
-                OutputStreamWriter(fileOutputStream, "UTF-8").use({ outputStreamWriter ->
-                    BufferedWriter(outputStreamWriter).use({ bw ->
+            FileOutputStream(file, true).use{ fileOutputStream ->
+                OutputStreamWriter(fileOutputStream, "UTF-8").use{ outputStreamWriter ->
+                    BufferedWriter(outputStreamWriter).use{ bw ->
                         bw.write(text+"\n")
                         bw.flush()
-                    })
-                })
-            })
+                    }
+                }
+            }
             Toast.makeText(this , R.string.download_message, Toast.LENGTH_SHORT).show();
         } catch (e: Exception) {
             e.printStackTrace()
