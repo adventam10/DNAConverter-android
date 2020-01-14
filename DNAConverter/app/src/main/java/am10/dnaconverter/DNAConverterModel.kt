@@ -2,6 +2,9 @@ package am10.dnaconverter
 
 import android.net.Uri
 import java.net.URLEncoder
+import java.text.SimpleDateFormat
+import java.util.*
+
 
 class DNAConverterModel {
     var originalText: String? = null
@@ -12,6 +15,12 @@ class DNAConverterModel {
         "CA" to "8", "CT" to "9", "CC" to "a", "CG" to "b",
         "GA" to "c", "GT" to "d", "GC" to "e", "GG" to "f"
     )
+
+    fun makeFileName(): String {
+        val nowDate = SimpleDateFormat("yyyyMMddHHss").format(Date())
+        return nowDate!! + ".txt"
+    }
+
     fun getTwitterURL(hashTag: String): Uri? {
         if (convertedText.isNullOrEmpty()) {
             return null
@@ -19,9 +28,11 @@ class DNAConverterModel {
         val url = "https://twitter.com/intent/tweet?text=" + urlEncode(convertedText!!) + hashTag
         return Uri.parse(url)
     }
+
     fun urlEncode(text: String): String {
         return URLEncoder.encode(text, "UTF-8")
     }
+
     fun convertToDNA(text: String?): String? {
         if (text.isNullOrEmpty()) {
             return null

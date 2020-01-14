@@ -1,5 +1,6 @@
 package am10.dnaconverter
 
+import android.Manifest
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -10,28 +11,35 @@ import android.widget.*
 import android.content.Intent
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import androidx.appcompat.app.AlertDialog
+import java.io.BufferedWriter
+import java.io.File
+import java.io.FileOutputStream
+import java.io.OutputStreamWriter
+import android.os.Environment
+import android.content.pm.PackageManager
+import androidx.core.app.ActivityCompat
 
 class MainActivity : AppCompatActivity() {
 
     enum class Mode {
         LANGUAGE, DNA
     }
-    val hashTag: String
+    private val hashTag: String
         get() {
             return "&hashtags=" + model.urlEncode(getString(R.string.hash_tag))
         }
 
-    val convertedTextView: TextView
+    private val REQUEST_PERMISSION = 1000
+    private val convertedTextView: TextView
     get() {
         return findViewById<TextView>(R.id.text_view_converted)!!
     }
-    val originalEditText: EditText
+    private val originalEditText: EditText
         get() {
             return findViewById<EditText>(R.id.edit_text_original)!!
         }
-    val mode: Mode
+    private val mode: Mode
     get() {
         val radioGroup: RadioGroup = findViewById(R.id.radio_group_mode)
         if (radioGroup.checkedRadioButtonId == R.id.radio_button_language) {
@@ -39,7 +47,7 @@ class MainActivity : AppCompatActivity() {
         }
         return Mode.DNA
     }
-    val model = DNAConverterModel()
+    private val model = DNAConverterModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,7 +75,6 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
         val downloadButton: ImageButton = findViewById(R.id.image_button_download)
-        downloadButton.visibility = View.INVISIBLE
         downloadButton.setOnClickListener {
             hideKeyboard()
             setTexts()
@@ -75,8 +82,7 @@ class MainActivity : AppCompatActivity() {
                 showConfirmationDialog(getString(R.string.alert_title), getString(R.string.alert_message))
                 return@setOnClickListener
             }
-            saveFile("test.txt", model.convertedText!!)
-            Toast.makeText(this , R.string.download_message, Toast.LENGTH_SHORT).show();
+            checkPermission()
         }
         val copyButton: ImageButton = findViewById(R.id.image_button_copy)
         copyButton.setOnClickListener {
@@ -84,7 +90,7 @@ class MainActivity : AppCompatActivity() {
             setTexts()
             val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             clipboard.setPrimaryClip(ClipData.newPlainText(getString(R.string.mode_dna), model.convertedText))
-            Toast.makeText(this , R.string.copy_message, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this , R.string.copy_message, Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -105,6 +111,20 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        if (requestCode == REQUEST_PERMISSION) {
+            if (grantResults.isNotEmpty()) {
+                for (i in permissions.indices) {
+                    if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
+                        saveFile(model.makeFileName(), model.convertedText!!)
+                    } else {
+                        Toast.makeText(this, getString(R.string.file_permission_denied_message), Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
+    }
+
     private fun shareConvertedText() {
         setTexts()
         if (model.isInvalidDNA(model.convertedText)) {
@@ -120,6 +140,7 @@ class MainActivity : AppCompatActivity() {
         val shareIntent = Intent.createChooser(sendIntent, null)
         startActivity(shareIntent)
     }
+
     private fun hideKeyboard() {
         val view = currentFocus
         if (view != null) {
@@ -140,9 +161,60 @@ class MainActivity : AppCompatActivity() {
             .setPositiveButton(getString(R.string.alert_positive_button_title), null).show()
     }
 
-    private fun saveFile(file: String, text: String) {
-        applicationContext.openFileOutput(file, Context.MODE_PRIVATE).use {
-            it.write(text.toByteArray())
+    private fun saveFile(fileName: String, text: String) {
+        if (!isExternalStorageWritable()) {
+            Toast.makeText(this , R.string.file_not_writable_message, Toast.LENGTH_SHORT).show();
+            return
+        }
+        val path = getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)
+        val file = File(path, fileName)
+        try {
+            FileOutputStream(file, true).use({ fileOutputStream ->
+                OutputStreamWriter(fileOutputStream, "UTF-8").use({ outputStreamWriter ->
+                    BufferedWriter(outputStreamWriter).use({ bw ->
+                        bw.write(text+"\n")
+                        bw.flush()
+                    })
+                })
+            })
+            Toast.makeText(this , R.string.download_message, Toast.LENGTH_SHORT).show();
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Toast.makeText(this , getString(R.string.file_download_failed_message), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private fun isExternalStorageWritable(): Boolean {
+        val state = Environment.getExternalStorageState()
+        return Environment.MEDIA_MOUNTED == state
+    }
+
+    private fun checkPermission() {
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+           saveFile(model.makeFileName(), model.convertedText!!)
+        } else {
+            requestLocationPermission()
+        }
+    }
+
+    private fun requestLocationPermission() {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            val reqPermissions = ArrayList<String>()
+            reqPermissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            ActivityCompat.requestPermissions(this,
+                reqPermissions.toTypedArray(), REQUEST_PERMISSION)
+
+        } else {
+            Toast.makeText(this, getString(R.string.file_permission_denied_message), Toast.LENGTH_SHORT).show()
+            val reqPermissions = ArrayList<String>()
+            reqPermissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            ActivityCompat.requestPermissions(this,
+                reqPermissions.toTypedArray(), REQUEST_PERMISSION)
         }
     }
 }

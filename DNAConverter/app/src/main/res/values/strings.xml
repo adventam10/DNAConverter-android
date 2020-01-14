@@ -12,4 +12,7 @@
     <string name="alert_positive_button_title">OK</string>
     <string name="download_message">Result downloaded</string>
     <string name="menu_share">Share</string>
+    <string name="file_permission_denied_message">Require permission to download file</string>
+    <string name="file_download_failed_message">Failed download file</string>
+    <string name="file_not_writable_message">Please wait a moment and try again</string>
 </resources>
