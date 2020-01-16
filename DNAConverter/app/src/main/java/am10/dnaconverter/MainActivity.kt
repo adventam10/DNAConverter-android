@@ -7,7 +7,6 @@ import android.content.ClipboardManager
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.*
 import android.content.Intent
 import android.view.Menu
 import android.view.MenuItem
@@ -18,6 +17,7 @@ import java.io.OutputStreamWriter
 import android.os.Environment
 import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
+import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -30,18 +30,10 @@ class MainActivity : AppCompatActivity() {
         }
 
     private val REQUEST_PERMISSION = 1000
-    private val convertedTextView: TextView
-    get() {
-        return findViewById<TextView>(R.id.text_view_converted)!!
-    }
-    private val originalEditText: EditText
-        get() {
-            return findViewById<EditText>(R.id.edit_text_original)!!
-        }
+
     private val mode: Mode
     get() {
-        val radioGroup: RadioGroup = findViewById(R.id.radio_group_mode)
-        if (radioGroup.checkedRadioButtonId == R.id.radio_button_language) {
+        if (radio_group_mode.checkedRadioButtonId == R.id.radio_button_language) {
             return Mode.LANGUAGE
         }
         return Mode.DNA
@@ -52,18 +44,17 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val convertButton: Button = findViewById(R.id.button_convert)
-        convertButton.setOnClickListener {
+        button_convert.setOnClickListener {
             hideKeyboard()
             setTexts()
             if (mode == Mode.LANGUAGE) {
-                convertedTextView.text = model.convertToDNA(model.originalText)?: getString(R.string.error_message)
+                text_view_converted.text = model.convertToDNA(model.originalText)?: getString(R.string.error_message)
             } else {
-                convertedTextView.text = model.convertToLanguage(model.originalText)?: getString(R.string.error_message)
+                text_view_converted.text = model.convertToLanguage(model.originalText)?: getString(R.string.error_message)
             }
         }
-        val twitterButton: ImageButton = findViewById(R.id.image_button_twitter)
-        twitterButton.setOnClickListener {
+
+        image_button_twitter.setOnClickListener {
             hideKeyboard()
             setTexts()
             if (model.isInvalidDNA(model.convertedText)) {
@@ -73,8 +64,8 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(Intent.ACTION_VIEW, model.getTwitterURL(hashTag))
             startActivity(intent)
         }
-        val downloadButton: ImageButton = findViewById(R.id.image_button_download)
-        downloadButton.setOnClickListener {
+
+        image_button_download.setOnClickListener {
             hideKeyboard()
             setTexts()
             if (model.isInvalidDNA(model.convertedText)) {
@@ -83,8 +74,8 @@ class MainActivity : AppCompatActivity() {
             }
             checkPermission()
         }
-        val copyButton: ImageButton = findViewById(R.id.image_button_copy)
-        copyButton.setOnClickListener {
+
+        image_button_copy.setOnClickListener {
             hideKeyboard()
             setTexts()
             val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
@@ -141,8 +132,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setTexts() {
-        model.originalText = originalEditText.text.toString()
-        model.convertedText = convertedTextView.text.toString()
+        model.originalText = edit_text_original.text.toString()
+        model.convertedText = text_view_converted.text.toString()
     }
 
     private fun saveFile(fileName: String, text: String) {
