@@ -40,33 +40,32 @@
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
-                    android:inputType="textMultiLine"
-                    android:textSize="18sp"
+                    android:padding="8dp"
                     android:gravity="top|left"
                     android:background="#00000000"
-                    android:padding="8dp"
+                    android:inputType="textMultiLine"
+                    android:textSize="18sp"
                     android:hint="@string/original_place_holder" />
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
                     android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp">
+                    android:layout_marginEnd="16dp"
+                    android:orientation="horizontal">
                     <View
                         android:layout_width="0dp"
                         android:layout_height="1dp"
-                        android:layout_weight="1"
-                        />
+                        android:layout_weight="1" />
                     <Button
                         android:id="@+id/button_convert"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/convert"
                         android:minWidth="0dp"
-                        android:textColor="@drawable/text_button_selector"
-                        android:background="@null"/>
+                        android:background="@null"
+                        android:text="@string/convert"
+                        android:textColor="@drawable/text_button_selector" />
                 </LinearLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
@@ -91,16 +90,15 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
                     android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp">
+                    android:layout_marginEnd="16dp"
+                    android:orientation="horizontal">
                     <View
                         android:layout_width="0dp"
                         android:layout_height="1dp"
-                        android:layout_weight="1"
-                        />
+                        android:layout_weight="1" />
                     <ImageButton
                         android:id="@+id/image_button_download"
                         android:layout_width="wrap_content"
