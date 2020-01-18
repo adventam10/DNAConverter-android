@@ -1,4 +1,4 @@
-package am10.dnaconverter.Extensions
+package am10.dnaconverter.extensions
 
 import java.net.URLEncoder
 

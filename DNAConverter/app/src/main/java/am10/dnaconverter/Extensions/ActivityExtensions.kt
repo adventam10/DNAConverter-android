@@ -1,4 +1,4 @@
-package am10.dnaconverter.Extensions
+package am10.dnaconverter.extensions
 
 import am10.dnaconverter.R
 import android.content.Context

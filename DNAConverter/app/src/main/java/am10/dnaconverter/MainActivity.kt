@@ -1,6 +1,7 @@
 package am10.dnaconverter
 
-import am10.dnaconverter.Extensions.*
+import am10.dnaconverter.extensions.*
+import am10.dnaconverter.models.*
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -16,22 +17,23 @@ enum class ConvertMode {
     LANGUAGE, DNA
 }
 
-class MainActivity : AppCompatActivity(), DownloadFileCallBack {
+class MainActivity : AppCompatActivity() {
 
     private lateinit var model: DNAConverterModel
+    private val fileDownloadModel = FileDownloadModel()
     private val mode: ConvertMode
     get() {
-        if (radio_group_mode.checkedRadioButtonId == R.id.radio_button_language) {
-            return ConvertMode.LANGUAGE
+        return when (radio_group_mode.checkedRadioButtonId) {
+            R.id.radio_button_language -> ConvertMode.LANGUAGE
+            else -> ConvertMode.DNA
         }
-        return ConvertMode.DNA
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        model = DNAConverterModel(this, this)
+        model = DNAConverterModel(this)
         button_convert.setOnClickListener {
             hideKeyboard()
             convertDNA()
@@ -68,11 +70,13 @@ class MainActivity : AppCompatActivity(), DownloadFileCallBack {
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        if (requestCode == model.REQUEST_PERMISSION) {
+        if (requestCode == fileDownloadModel.REQUEST_PERMISSION) {
             if (grantResults.isNotEmpty()) {
                 for (i in permissions.indices) {
                     if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
-                        model.saveFile(this, model.makeFileName(), model.convertedText!!)
+                        fileDownloadModel.saveFile(this, model.makeFileName(), model.convertedText!!) {
+                            onDownloaded(it)
+                        }
                     } else {
                         showShortToast(getString(R.string.file_permission_denied_message))
                     }
@@ -81,7 +85,7 @@ class MainActivity : AppCompatActivity(), DownloadFileCallBack {
         }
     }
 
-    override fun onDownloaded(result: DownloadFileState) {
+    private fun onDownloaded(result: DownloadFileState) {
         val message = when (result) {
             DownloadFileState.COMPLETED -> getString(R.string.download_message)
             DownloadFileState.UNWRITABLE -> getString(R.string.file_not_writable_message)
@@ -115,8 +119,10 @@ class MainActivity : AppCompatActivity(), DownloadFileCallBack {
             showConfirmationDialog(getString(R.string.alert_title), getString(R.string.alert_message))
             return
         }
-        if (model.isAcceptedExternalStoragePermission(this)) {
-            model.saveFile(this, model.makeFileName(), model.convertedText!!)
+        if (fileDownloadModel.isAcceptedExternalStoragePermission(this)) {
+            fileDownloadModel.saveFile(this, model.makeFileName(), model.convertedText!!) {
+                onDownloaded(it)
+            }
         } else {
             requestExternalStoragePermission()
         }
@@ -151,11 +157,11 @@ class MainActivity : AppCompatActivity(), DownloadFileCallBack {
     }
 
     private fun requestExternalStoragePermission() {
-        if (model.shouldShowRequestExternalStoragePermission(this)) {
-            model.requestExternalStoragePermission(this)
+        if (fileDownloadModel.shouldShowRequestExternalStoragePermission(this)) {
+            fileDownloadModel.requestExternalStoragePermission(this)
         } else {
             showShortToast(getString(R.string.file_permission_denied_message))
-            model.requestExternalStoragePermission(this)
+            fileDownloadModel.requestExternalStoragePermission(this)
         }
     }
 }
