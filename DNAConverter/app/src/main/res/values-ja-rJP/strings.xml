@@ -18,4 +18,5 @@
     <string name="file_not_writable_message">時間をおいてから再度お試しください</string>
     <string name="update_completed_message">更新内容のダウンロードが完了しました。</string>
     <string name="update_action_title">更新</string>
+    <string name="clear">クリア</string>
 </resources>

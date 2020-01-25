@@ -11,6 +11,8 @@ import android.content.Intent
 import android.view.Menu
 import android.view.MenuItem
 import android.content.pm.PackageManager
+import android.widget.EditText
+import android.widget.TextView
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -20,6 +22,8 @@ enum class ConvertMode {
 
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var originalEditText: EditText
+    private lateinit var convertedTextView: TextView
     private lateinit var model: DNAConverterModel
     private val fileDownloadModel = FileDownloadModel()
     private lateinit var appUpdateModel: AppUpdateModel
@@ -35,6 +39,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        originalEditText = edit_text_original
+        convertedTextView = text_view_converted
         appUpdateModel = AppUpdateModel(this)
         appUpdateModel.checkAppVersion(this) {
             popupSnackbarForCompleteUpdate()
@@ -55,7 +61,10 @@ class MainActivity : AppCompatActivity() {
         image_button_copy.setOnClickListener {
             hideKeyboard()
             copyConvertedText()
-            popupSnackbarForCompleteUpdate()
+        }
+        button_clear.setOnClickListener {
+            hideKeyboard()
+            clearTexts()
         }
     }
 
@@ -108,12 +117,18 @@ class MainActivity : AppCompatActivity() {
         showShortToast(message)
     }
 
+    private fun clearTexts() {
+        originalEditText.setText("", TextView.BufferType.NORMAL)
+        convertedTextView.text = ""
+        setTexts()
+    }
+
     private fun convertDNA() {
         setTexts()
         if (mode == ConvertMode.LANGUAGE) {
-            text_view_converted.text = model.convertToDNA(model.originalText)?: getString(R.string.error_message)
+            convertedTextView.text = model.convertToDNA(model.originalText)?: getString(R.string.error_message)
         } else {
-            text_view_converted.text = model.convertToLanguage(model.originalText)?: getString(R.string.error_message)
+            convertedTextView.text = model.convertToLanguage(model.originalText)?: getString(R.string.error_message)
         }
     }
 
@@ -166,8 +181,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setTexts() {
-        model.originalText = edit_text_original.text.toString()
-        model.convertedText = text_view_converted.text.toString()
+        model.originalText = originalEditText.text.toString()
+        model.convertedText = convertedTextView.text.toString()
     }
 
     private fun requestExternalStoragePermission() {
