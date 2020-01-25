@@ -15,4 +15,6 @@
     <string name="file_permission_denied_message">Require permission to download file</string>
     <string name="file_download_failed_message">Failed download file</string>
     <string name="file_not_writable_message">Please wait a moment and try again</string>
+    <string name="update_completed_message">An update has just been downloaded.</string>
+    <string name="update_action_title">UPDATE</string>
 </resources>

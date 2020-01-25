@@ -11,6 +11,7 @@ import android.content.Intent
 import android.view.Menu
 import android.view.MenuItem
 import android.content.pm.PackageManager
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 
 enum class ConvertMode {
@@ -21,6 +22,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var model: DNAConverterModel
     private val fileDownloadModel = FileDownloadModel()
+    private lateinit var appUpdateModel: AppUpdateModel
     private val mode: ConvertMode
     get() {
         return when (radio_group_mode.checkedRadioButtonId) {
@@ -33,6 +35,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        appUpdateModel = AppUpdateModel(this)
+        appUpdateModel.checkAppVersion(this) {
+            popupSnackbarForCompleteUpdate()
+        }
         model = DNAConverterModel(this)
         button_convert.setOnClickListener {
             hideKeyboard()
@@ -49,6 +55,14 @@ class MainActivity : AppCompatActivity() {
         image_button_copy.setOnClickListener {
             hideKeyboard()
             copyConvertedText()
+            popupSnackbarForCompleteUpdate()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        appUpdateModel.addOnCompleteListener {
+            popupSnackbarForCompleteUpdate()
         }
     }
 
@@ -163,5 +177,14 @@ class MainActivity : AppCompatActivity() {
             showShortToast(getString(R.string.file_permission_denied_message))
             fileDownloadModel.requestExternalStoragePermission(this)
         }
+    }
+
+    private fun popupSnackbarForCompleteUpdate() {
+        Snackbar.make(findViewById(R.id.root_layout),
+            getString(R.string.update_completed_message), Snackbar.LENGTH_INDEFINITE)
+            .setAction(getString(R.string.update_action_title)) {
+                appUpdateModel.completeUpdate()
+            }
+            .show()
     }
 }
