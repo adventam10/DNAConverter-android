@@ -1,6 +1,7 @@
 package am10.dnaconverter.models
 
 import android.content.Context
+import org.json.JSONArray
 
 class HistoryModel(context: Context) {
     companion object{
@@ -11,7 +12,10 @@ class HistoryModel(context: Context) {
     private val pref = context.getSharedPreferences(PREF_HISTORIES, Context.MODE_PRIVATE)
     val histories: Array<String>
         get() {
-            return pref.getStringSet(PREF_HISTORIES, setOf())!!.toTypedArray()
+            val jsonArray = JSONArray(pref.getString(PREF_HISTORIES, "[]"))
+            return Array(jsonArray.length()) {
+                jsonArray.getString(it)
+            }
         }
 
     fun addHistory(history: String) {
@@ -24,6 +28,7 @@ class HistoryModel(context: Context) {
             saveHistories.removeAt(saveHistories.size - 1)
         }
         saveHistories.add(0, history)
-        pref.edit().putStringSet(PREF_HISTORIES, saveHistories.toSet()).apply()
+        val jsonArray = JSONArray(saveHistories)
+        pref.edit().putString(PREF_HISTORIES, jsonArray.toString()).apply()
     }
 }
