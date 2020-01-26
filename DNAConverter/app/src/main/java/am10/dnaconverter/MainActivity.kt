@@ -70,7 +70,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        appUpdateModel.addOnCompleteListener {
+        appUpdateModel.addOnSuccessListener {
             popupSnackbarForCompleteUpdate()
         }
     }

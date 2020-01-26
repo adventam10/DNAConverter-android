@@ -26,10 +26,9 @@ class AppUpdateModel(context: Context) {
         }
     }
 
-    fun addOnCompleteListener(callback: (() -> (Unit))?) {
-        manager.appUpdateInfo.addOnCompleteListener { task ->
-            val appUpdateInfo = task.result
-            if(appUpdateInfo.installStatus() == InstallStatus.DOWNLOADED) {
+    fun addOnSuccessListener(callback: (() -> (Unit))?) {
+        manager.appUpdateInfo.addOnSuccessListener { info ->
+            if (info.installStatus() == InstallStatus.DOWNLOADED) {
                 callback?.invoke()
             }
         }
