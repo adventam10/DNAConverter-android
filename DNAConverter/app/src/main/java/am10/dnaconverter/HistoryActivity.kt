@@ -6,6 +6,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
 import android.widget.ArrayAdapter
 import kotlinx.android.synthetic.main.activity_history.*
 
@@ -25,6 +26,7 @@ class HistoryActivity : AppCompatActivity() {
         val historyModel = HistoryModel(this)
         val listView = list_view_history
         val histories = historyModel.histories
+        text_view_no_histories.visibility = if (histories.isEmpty()) View.VISIBLE else View.GONE
         val adapter = ArrayAdapter<String>(this,
             R.layout.list_history_row,
             R.id.text_view_history,

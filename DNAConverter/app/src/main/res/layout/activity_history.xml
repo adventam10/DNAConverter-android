@@ -6,8 +6,19 @@
     android:layout_height="match_parent"
     tools:context=".HistoryActivity">
 
-    <ListView
-        android:id="@+id/list_view_history"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/text_view_no_histories"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:textSize="18sp"
+            android:text="@string/message_no_histories"/>
+        <ListView
+            android:id="@+id/list_view_history"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

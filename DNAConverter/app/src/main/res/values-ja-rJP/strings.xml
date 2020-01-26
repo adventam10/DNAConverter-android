@@ -20,4 +20,5 @@
     <string name="update_completed_message">更新内容のダウンロードが完了しました。</string>
     <string name="update_action_title">更新</string>
     <string name="clear">クリア</string>
+    <string name="message_no_histories">履歴がありません</string>
 </resources>
