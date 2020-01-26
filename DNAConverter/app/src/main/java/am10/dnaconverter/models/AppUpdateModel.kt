@@ -9,16 +9,20 @@ import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.install.model.UpdateAvailability
 
 class AppUpdateModel(context: Context) {
+
+    companion object{
+        const val REQUEST_UPDATE = 100
+    }
+
     val manager = AppUpdateManagerFactory.create(context)
     var listener: InstallStateUpdatedListener? = null
-    val REQUEST_CODE = 100
     fun checkAppVersion(activity: Activity, callback: (() -> (Unit))?) {
         listener = makeListener(callback)
         manager.registerListener(listener)
         manager.appUpdateInfo.addOnSuccessListener { info ->
             when (info.updateAvailability()) {
                 UpdateAvailability.UPDATE_AVAILABLE -> {
-                    manager.startUpdateFlowForResult(info, AppUpdateType.FLEXIBLE, activity, REQUEST_CODE)
+                    manager.startUpdateFlowForResult(info, AppUpdateType.FLEXIBLE, activity, REQUEST_UPDATE)
                 }
                 else -> {
                 }

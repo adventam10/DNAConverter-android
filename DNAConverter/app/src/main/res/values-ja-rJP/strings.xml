@@ -13,6 +13,7 @@
     <string name="alert_positive_button_title">OK</string>
     <string name="download_message">結果をダウンロードしました</string>
     <string name="menu_share">共有</string>
+    <string name="menu_history">履歴</string>
     <string name="file_permission_denied_message">ダウンロードには許可が必要です</string>
     <string name="file_download_failed_message">ダウンロードに失敗しました</string>
     <string name="file_not_writable_message">時間をおいてから再度お試しください</string>

@@ -2,6 +2,7 @@ package am10.dnaconverter
 
 import am10.dnaconverter.extensions.*
 import am10.dnaconverter.models.*
+import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -12,6 +13,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.content.pm.PackageManager
 import android.widget.EditText
+import android.widget.RadioGroup
 import android.widget.TextView
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
@@ -21,15 +23,20 @@ enum class ConvertMode {
 }
 
 class MainActivity : AppCompatActivity() {
+    companion object{
+        const val REQUEST_HISTORY = 50
+    }
 
     private lateinit var originalEditText: EditText
     private lateinit var convertedTextView: TextView
+    private lateinit var modeRadioGroup: RadioGroup
     private lateinit var model: DNAConverterModel
+    private lateinit var historyModel: HistoryModel
     private val fileDownloadModel = FileDownloadModel()
     private lateinit var appUpdateModel: AppUpdateModel
     private val mode: ConvertMode
     get() {
-        return when (radio_group_mode.checkedRadioButtonId) {
+        return when (modeRadioGroup.checkedRadioButtonId) {
             R.id.radio_button_language -> ConvertMode.LANGUAGE
             else -> ConvertMode.DNA
         }
@@ -41,10 +48,12 @@ class MainActivity : AppCompatActivity() {
 
         originalEditText = edit_text_original
         convertedTextView = text_view_converted
+        modeRadioGroup = radio_group_mode
         appUpdateModel = AppUpdateModel(this)
         appUpdateModel.checkAppVersion(this) {
             popupSnackbarForCompleteUpdate()
         }
+        historyModel = HistoryModel(this)
         model = DNAConverterModel(this)
         button_convert.setOnClickListener {
             hideKeyboard()
@@ -88,12 +97,16 @@ class MainActivity : AppCompatActivity() {
                 shareConvertedText()
                 true
             }
+            R.id.history -> {
+                showHistory()
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        if (requestCode == fileDownloadModel.REQUEST_PERMISSION) {
+        if (requestCode == FileDownloadModel.REQUEST_PERMISSION) {
             if (grantResults.isNotEmpty()) {
                 for (i in permissions.indices) {
                     if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
@@ -106,6 +119,27 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_HISTORY && resultCode == Activity.RESULT_OK) {
+            val history = data?.getStringExtra(HistoryActivity.EXTRA_HISTORY)
+            convertHistory(history!!)
+        }
+    }
+
+    private fun showHistory() {
+        val intent = Intent(this, HistoryActivity::class.java)
+        startActivityForResult(intent, REQUEST_HISTORY)
+    }
+
+    private fun convertHistory(history: String) {
+        radio_button_nucleotide.isChecked = true
+        originalEditText.setText(history, TextView.BufferType.NORMAL)
+        convertedTextView.text = ""
+        historyModel.addHistory(history)
+        convertDNA()
     }
 
     private fun onDownloaded(result: DownloadFileState) {
@@ -126,7 +160,11 @@ class MainActivity : AppCompatActivity() {
     private fun convertDNA() {
         setTexts()
         if (mode == ConvertMode.LANGUAGE) {
-            convertedTextView.text = model.convertToDNA(model.originalText)?: getString(R.string.error_message)
+            val convertedText = model.convertToDNA(model.originalText)
+            convertedTextView.text = convertedText?: getString(R.string.error_message)
+            if (convertedText.isNullOrEmpty().not()) {
+                historyModel.addHistory(convertedText!!)
+            }
         } else {
             convertedTextView.text = model.convertToLanguage(model.originalText)?: getString(R.string.error_message)
         }

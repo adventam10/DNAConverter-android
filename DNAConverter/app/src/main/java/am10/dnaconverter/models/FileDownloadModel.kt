@@ -17,7 +17,9 @@ enum class DownloadFileState {
 }
 
 class FileDownloadModel {
-    val REQUEST_PERMISSION = 1000
+    companion object{
+        const val REQUEST_PERMISSION = 1000
+    }
 
     fun isExternalStorageWritable(): Boolean {
         val state = Environment.getExternalStorageState()
