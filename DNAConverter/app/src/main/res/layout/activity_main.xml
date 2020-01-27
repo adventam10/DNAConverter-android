@@ -11,23 +11,41 @@
         android:layout_height="match_parent"
         android:layout_margin="16dp"
         android:orientation="vertical">
-        <RadioGroup
-            android:id="@+id/radio_group_mode"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:checkedButton="@id/radio_button_language"
+            android:gravity="center_vertical"
             android:orientation="horizontal">
-            <RadioButton
-                android:id="@+id/radio_button_language"
-                android:layout_width="match_parent"
+            <RadioGroup
+                android:id="@+id/radio_group_mode"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/mode_language" />
-            <RadioButton
-                android:id="@+id/radio_button_nucleotide"
-                android:layout_width="match_parent"
+                android:checkedButton="@id/radio_button_language"
+                android:orientation="horizontal">
+                <RadioButton
+                    android:id="@+id/radio_button_language"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/mode_language" />
+                <RadioButton
+                    android:id="@+id/radio_button_nucleotide"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/mode_dna" />
+            </RadioGroup>
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+            <Button
+                android:id="@+id/button_convert"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/mode_dna" />
-        </RadioGroup>
+                android:minWidth="0dp"
+                android:background="@null"
+                android:text="@string/convert"
+                android:textColor="@drawable/text_button_selector" />
+        </LinearLayout>
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -42,7 +60,7 @@
                     android:layout_height="0dp"
                     android:layout_weight="1"
                     android:padding="8dp"
-                    android:gravity="top|left"
+                    android:gravity="top|start"
                     android:background="#00000000"
                     android:inputType="textMultiLine"
                     android:textSize="18sp"
@@ -67,14 +85,14 @@
                         android:layout_width="0dp"
                         android:layout_height="1dp"
                         android:layout_weight="1" />
-                    <Button
-                        android:id="@+id/button_convert"
+                    <ImageButton
+                        android:id="@+id/image_button_record"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:minWidth="0dp"
-                        android:background="@null"
-                        android:text="@string/convert"
-                        android:textColor="@drawable/text_button_selector" />
+                        android:layout_marginEnd="8dp"
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/button_selector"
+                        android:background="@drawable/btn_record_image"/>
                 </LinearLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
@@ -112,7 +130,7 @@
                         android:id="@+id/image_button_download"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginRight="8dp"
+                        android:layout_marginEnd="8dp"
                         android:layout_gravity="center_vertical"
                         android:src="@drawable/button_selector"
                         android:background="@drawable/ic_file_download"/>
@@ -120,7 +138,7 @@
                         android:id="@+id/image_button_copy"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginRight="8dp"
+                        android:layout_marginEnd="8dp"
                         android:layout_gravity="center_vertical"
                         android:src="@drawable/button_selector"
                         android:background="@drawable/ic_content_copy"/>

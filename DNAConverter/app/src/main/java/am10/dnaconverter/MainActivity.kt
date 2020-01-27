@@ -13,6 +13,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.content.pm.PackageManager
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.RadioGroup
 import android.widget.TextView
 import com.google.android.material.snackbar.Snackbar
@@ -30,8 +31,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var originalEditText: EditText
     private lateinit var convertedTextView: TextView
     private lateinit var modeRadioGroup: RadioGroup
+    private lateinit var recordImageButton: ImageButton
     private lateinit var model: DNAConverterModel
     private lateinit var historyModel: HistoryModel
+    private lateinit var speechModel: SpeechModel
     private val fileDownloadModel = FileDownloadModel()
     private lateinit var appUpdateModel: AppUpdateModel
     private val mode: ConvertMode
@@ -49,11 +52,13 @@ class MainActivity : AppCompatActivity() {
         originalEditText = edit_text_original
         convertedTextView = text_view_converted
         modeRadioGroup = radio_group_mode
+        recordImageButton = image_button_record
         appUpdateModel = AppUpdateModel(this)
         appUpdateModel.checkAppVersion(this) {
             popupSnackbarForCompleteUpdate()
         }
         historyModel = HistoryModel(this)
+        speechModel = SpeechModel(this)
         model = DNAConverterModel(this)
         button_convert.setOnClickListener {
             hideKeyboard()
@@ -74,6 +79,15 @@ class MainActivity : AppCompatActivity() {
         button_clear.setOnClickListener {
             hideKeyboard()
             clearTexts()
+        }
+        recordImageButton.setOnClickListener {
+            hideKeyboard()
+            if (speechModel.isRecording) {
+                it.isSelected = false
+                speechModel.stopListening()
+            } else {
+                record()
+            }
         }
     }
 
@@ -118,6 +132,14 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             }
+        } else if (requestCode == SpeechModel.REQUEST_PERMISSION) {
+            for (i in permissions.indices) {
+                if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
+                    startListening()
+                } else {
+                    showShortToast(getString(R.string.record_permission_denied_message))
+                }
+            }
         }
     }
 
@@ -155,6 +177,21 @@ class MainActivity : AppCompatActivity() {
         originalEditText.setText("", TextView.BufferType.NORMAL)
         convertedTextView.text = ""
         setTexts()
+    }
+
+    private fun record() {
+        if (speechModel.isAcceptedRecordAudioPermission(this)) {
+            startListening()
+        } else {
+            requestRecordAudioPermission()
+        }
+    }
+
+    private fun startListening() {
+        recordImageButton.isSelected = true
+        speechModel.startListening(this) {
+            originalEditText.setText(it, TextView.BufferType.NORMAL)
+        }
     }
 
     private fun convertDNA() {
@@ -229,6 +266,15 @@ class MainActivity : AppCompatActivity() {
         } else {
             showShortToast(getString(R.string.file_permission_denied_message))
             fileDownloadModel.requestExternalStoragePermission(this)
+        }
+    }
+
+    private fun requestRecordAudioPermission() {
+        if (speechModel.shouldShowRequestRecordAudioPermission(this)) {
+            speechModel.requestRecordAudioPermission(this)
+        } else {
+            showShortToast(getString(R.string.record_permission_denied_message))
+            speechModel.requestRecordAudioPermission(this)
         }
     }
 
